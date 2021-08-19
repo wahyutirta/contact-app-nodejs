@@ -50,6 +50,15 @@ const loadContact = (nama, email, noHp) =>{
 }
 
 const simpanContact = (nama, email, noHp) => {
+    
+    if (!fs.existsSync('./data')) {
+        fs.mkdirSync('./data');
+        fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
+    }
+    if (!fs.existsSync('./data/contacts.json')) {
+        fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
+    }
+
     const contact = { nama, noHp, email };
     // const file = fs.readFileSync('data/contacts.json', 'utf8');
     // //rubah apapun isi file dalam bentuk json
@@ -85,12 +94,40 @@ const listContact = () => {
     
     contacts.forEach((contact, i) => {
     
-        console.log(`No. ${i+1} ${ contact.nama ? contact.nama : ''} ${contact.noHp ? contact.noHp : ''} ${contact.email ? contact.email : ''}`);
+        console.log(`No. ${i+1} ${contact.nama} ${contact.noHp ? contact.noHp : ''} ${contact.email ? contact.email : ''}`);
         //console.log(`No ${i+1} ${contact.nama}, ${contact.noHp}, ${contact.email}`);
     });
 }
 
-module.exports = { listContact, simpanContact };
+const detailContact = (nama) => {
+    const contacts = loadContact();
+    const contact = contacts.find((contact) => contact.nama.toLowerCase() === nama.toLowerCase());
+    if (!contact){
+        console.log(chalk.red.inverse.bold(`${nama} tidak ditemukan`));
+        return false;
+    }
+    console.log(chalk.cyan.inverse.bold(`contact.nama`));
+    console.log(chalk.cyan.inverse.bold(`contact.noHp`));
+    console.log(chalk.cyan.inverse.bold(`${contact.email || contact.email =='' ? contact.email : ''}`));
+    
+
+}
+
+const deleteContact = (nama) => {
+    const contacts = loadContact();
+    
+    const newContacts = contacts.filter((contact) => contact.nama.toLowerCase() !== nama.toLowerCase());
+    if (contacts.length === newContacts.length ){
+        console.log(chalk.red.inverse.bold(`${nama} tidak ditemukan`));
+        return false;
+    }
+    fs.writeFileSync('data/contacts.json', JSON.stringify(newContacts));
+    console.log(chalk.green.inverse.bold(`Terimakasih ${nama}, sudah dihapus`));
+
+
+};
+
+module.exports = { listContact, simpanContact, detailContact, deleteContact };
 
 // using call back, but it is callback loop hell 
 // rl.question('Masukan nama anda :', (nama) => {

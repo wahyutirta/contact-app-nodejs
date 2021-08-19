@@ -38,4 +38,34 @@ yargs.command({
     }
 });
 
+yargs.command({
+    command: 'detail',
+    describe: 'Menampilkan detail kontak',
+    builder: {
+        nama: {
+            describe: 'Nama Lengkap',
+            demandOption: true,
+            type: 'string'
+        },
+    },
+    handler (argv){
+        contact.detailContact(argv.nama);
+    },
+});
+
+yargs.command({
+    command: 'delete',
+    describe: 'Menghapus kontak berdasarkan nama',
+    builder: {
+        nama: {
+            describe: 'Nama Lengkap',
+            demandOption: true,
+            type: 'string'
+        },
+    },
+    handler (argv){
+        contact.deleteContact(argv.nama);
+    },
+});
+
 yargs.parse();
