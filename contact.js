@@ -1,30 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const validator = require('validator');
-// const readline = require('readline');
-// const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-// });
 
-// try{
-//     fs.writeFileSync('data/text.txt', 'Write Hellow World Synchronous');
-
-// } catch (e){
-//     console.log(e);
-// }
-
-// fs.writeFile('data/text.txt', 'Write Hello World ASynchronous', (err)=> {
-//     console.log(err);
-// });
-
-// const data = fs.readFileSync('data/text.txt', 'utf-8');
-// console.log(data);
-
-// const dataAsyn = fs.readFile('data/text.txt', 'utf-8', (err, dataAsyn) =>{
-//     if (err) throw err;
-//     console.log(dataAsyn);
-// });
 
 if (!fs.existsSync('./data')) {
     fs.mkdirSync('./data');

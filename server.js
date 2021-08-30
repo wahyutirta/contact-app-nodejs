@@ -1,12 +1,27 @@
 const http = require('http');
 const express = require('express');
 const expressLayouts = require('express-ejs-layouts');
+const morgan = require('morgan');
+
+const contactUtils = require('./utils/contacts');
+
+
 const app = express();
 const port = 3000;
 
 app.set('view engine', 'ejs');
+
+//third party middle ware
 app.use(expressLayouts);
+app.use(morgan('dev'))
+ 
 app.set('layout', 'layouts/main-layout')
+
+//middle ware
+
+ //byuild in middle ware
+app.use(express.static('public'));
+
 
 app.get('/', (req, res) => {
 
@@ -23,8 +38,21 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/contact', (req, res) => {
-    res.render('contact', {nama : 'wahyu', title : 'Halaman Contact'});
+    const contacts = contactUtils.loadContact();
+    
+    res.render('contact', {nama : 'wahyu', title : 'Halaman Contact', contacts: contacts});
 });
+
+app.get('contact/add', (req, res) => {
+    res.render('add-contact', { title : 'Halaman Tambah Contact'});
+});
+
+app.get('/contact/:nama', (req, res) => {
+    const contact = contactUtils.findContact(req.params.nama)
+    
+    res.render('detail', { title : 'Halaman Detail Contact', contact: contact});
+});
+
 
 app.use('/', (req, res) => {
     res.status('404');
