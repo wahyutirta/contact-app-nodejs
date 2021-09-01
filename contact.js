@@ -20,6 +20,15 @@ const pertanyaan = (Question) => {
 };
 
 const loadContact = (nama, email, noHp) =>{
+
+    if (!fs.existsSync('./data')) {
+        fs.mkdirSync('./data');
+        fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
+    }
+    if (!fs.existsSync('./data/contacts.json')) {
+        fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
+    }
+
     const file = fs.readFileSync('data/contacts.json', 'utf8');
     //rubah apapun isi file dalam bentuk json
     const contacts = JSON.parse(file);

@@ -4,7 +4,11 @@ const expressLayouts = require('express-ejs-layouts');
 const morgan = require('morgan');
 
 const contactUtils = require('./utils/contacts');
+const {body, validationResult, check} = require('express-validator');
 
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const flash = require('connect-flash');
 
 const app = express();
 const port = 3000;
@@ -13,9 +17,20 @@ app.set('view engine', 'ejs');
 
 //third party middle ware
 app.use(expressLayouts);
-app.use(morgan('dev'))
+app.use(morgan('dev'));
  
-app.set('layout', 'layouts/main-layout')
+app.set('layout', 'layouts/main-layout');
+app.use(express.urlencoded({extended: true}));
+
+app.use(cookieParser('secret'));
+app.use(session({
+    cookie: {maxAge: 6000},
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true,
+    
+}))
+app.use(flash());
 
 //middle ware
 
@@ -40,11 +55,42 @@ app.get('/about', (req, res) => {
 app.get('/contact', (req, res) => {
     const contacts = contactUtils.loadContact();
     
-    res.render('contact', {nama : 'wahyu', title : 'Halaman Contact', contacts: contacts});
+    res.render('contact', {title : 'Halaman Contact', contacts: contacts, msg: req.flash('msg')});
 });
 
-app.get('contact/add', (req, res) => {
+app.get('/contact/add', (req, res) => {
     res.render('add-contact', { title : 'Halaman Tambah Contact'});
+});
+
+// proses data baru
+app.post('/contact', [
+    body('nama').custom((value) => {
+        const duplikat = contactUtils.isDuplikat(value);
+        if (duplikat){
+            throw new Error('Nama contact sudah digunakan');
+
+        }
+        return true;
+    }),
+    check('email', 'Email tidak valid').isEmail(),
+    check('nohp', 'No Hp tidak valid').isMobilePhone('id-ID'),
+] ,(req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()){
+        //return res.status(400).json({errors: errors.array()});
+        res.render('add-contact', {
+            title: 'Form Tambah Data Contact',
+            errors: errors.array(),
+        });
+
+    } else {
+
+        console.log(req.body)
+        //res.send('data berhasil disimpan');
+        req.flash('msg', 'data kontak berhasil ditambahkan');
+        contactUtils.addContact(req.body);
+        res.redirect('/contact');
+    }
 });
 
 app.get('/contact/:nama', (req, res) => {
@@ -62,14 +108,3 @@ app.use('/', (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
-
-
-// http.createServer((req, res) => {
-//     res.writeHead(200, {
-//         'Content-Type' : 'text/html',
-//     });
-//     res.write('hello world');
-//     res.end();
-// }).listen(port, () => {
-//     console.log(`server is listening on port ${port}...`);
-// });

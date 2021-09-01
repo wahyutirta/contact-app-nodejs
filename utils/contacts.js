@@ -2,14 +2,16 @@ const fs = require('fs');
 const chalk = require('chalk');
 const validator = require('validator');
 
+const screening = () => {
+    if (!fs.existsSync('./data')) {
+        fs.mkdirSync('./data');
+        fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
+    }
+    if (!fs.existsSync('./data/contacts.json')) {
+        fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
+    }
+};
 
-if (!fs.existsSync('./data')) {
-    fs.mkdirSync('./data');
-    fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
-}
-if (!fs.existsSync('./data/contacts.json')) {
-    fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
-}
 
 const pertanyaan = (Question) => {
     return new Promise((resolve, reject) => {
@@ -19,7 +21,9 @@ const pertanyaan = (Question) => {
     });
 };
 
-const loadContact = (nama, email, noHp) =>{
+const loadContact = (nama, noHp, email) =>{
+    screening();
+
     const file = fs.readFileSync('data/contacts.json', 'utf8');
     //rubah apapun isi file dalam bentuk json
     const contacts = JSON.parse(file);
@@ -32,4 +36,26 @@ const findContact = (nama) => {
     return contact;
 }
 
-module.exports = {loadContact, findContact};
+const saveContact = (contacts) => {
+    fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
+}
+
+const addContact = (contact) => {
+
+
+    const contacts = loadContact();
+
+    //gabungkan data baru
+    contacts.push(contact);
+    saveContact(contacts)
+    
+    
+    //rl.close();
+}
+
+const isDuplikat = (nama) => {
+    const contacts = loadContact();
+    return contacts.find((contact) => contact.nama === nama);
+}
+
+module.exports = {loadContact, findContact, addContact, isDuplikat};
