@@ -19,7 +19,7 @@ const pertanyaan = (Question) => {
     });
 };
 
-const loadContact = (nama, email, noHp) =>{
+const loadContact = (nama, email, noHp) => {
 
     if (!fs.existsSync('./data')) {
         fs.mkdirSync('./data');
@@ -36,7 +36,7 @@ const loadContact = (nama, email, noHp) =>{
 }
 
 const simpanContact = (nama, email, noHp) => {
-    
+
     if (!fs.existsSync('./data')) {
         fs.mkdirSync('./data');
         fs.writeFileSync('./data/contacts.json', '[]', 'utf-8');
@@ -56,13 +56,13 @@ const simpanContact = (nama, email, noHp) => {
         console.log(chalk.red.inverse.bold('kontak sudah terdaftar'));
         return false;
     }
-    if (email){
-        if(!validator.isEmail(email)){
+    if (email) {
+        if (!validator.isEmail(email)) {
             console.log(chalk.red.inverse.bold('input email bukan email valid'));
-        return false;
+            return false;
         }
     }
-    if(!validator.isMobilePhone(noHp, 'id-ID')){
+    if (!validator.isMobilePhone(noHp, 'id-ID')) {
         console.log(chalk.red.inverse.bold('input no hand phone bukan no hand phone valid'));
         return false;
     }
@@ -77,10 +77,10 @@ const simpanContact = (nama, email, noHp) => {
 const listContact = () => {
     const contacts = loadContact();
     console.log(chalk.blue.inverse.bold('Daftar Kontak'));
-    
+
     contacts.forEach((contact, i) => {
-    
-        console.log(`No. ${i+1} ${contact.nama} ${contact.noHp ? contact.noHp : ''} ${contact.email ? contact.email : ''}`);
+
+        console.log(`No. ${i + 1} ${contact.nama} ${contact.noHp ? contact.noHp : ''} ${contact.email ? contact.email : ''}`);
         //console.log(`No ${i+1} ${contact.nama}, ${contact.noHp}, ${contact.email}`);
     });
 }
@@ -88,22 +88,22 @@ const listContact = () => {
 const detailContact = (nama) => {
     const contacts = loadContact();
     const contact = contacts.find((contact) => contact.nama.toLowerCase() === nama.toLowerCase());
-    if (!contact){
+    if (!contact) {
         console.log(chalk.red.inverse.bold(`${nama} tidak ditemukan`));
         return false;
     }
     console.log(chalk.cyan.inverse.bold(`contact.nama`));
     console.log(chalk.cyan.inverse.bold(`contact.noHp`));
-    console.log(chalk.cyan.inverse.bold(`${contact.email || contact.email =='' ? contact.email : ''}`));
-    
+    console.log(chalk.cyan.inverse.bold(`${contact.email || contact.email == '' ? contact.email : ''}`));
+
 
 }
 
 const deleteContact = (nama) => {
     const contacts = loadContact();
-    
+
     const newContacts = contacts.filter((contact) => contact.nama.toLowerCase() !== nama.toLowerCase());
-    if (contacts.length === newContacts.length ){
+    if (contacts.length === newContacts.length) {
         console.log(chalk.red.inverse.bold(`${nama} tidak ditemukan`));
         return false;
     }

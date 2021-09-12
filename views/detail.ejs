@@ -10,11 +10,12 @@
                 <% } else{ %>  
             <div class="card" style="width: 18rem;">
                 <div class="card-body">
-                  <h5 class="card-title"><%= contact.nama %> >></h5>
+                  <h5 class="card-title"><%= contact.nama %></h5>
                   <h6 class="card-subtitle mb-2 text-muted"><%= contact.email %></h6>
                   <p class="card-text"> <%= contact.nohp  %> </p>
-                  
                   <a href="/contact" class="card-link">&laquo; Kembali Ke halaman selanjutnya</a>
+                  <a href="/contact/edit/<%= contact.nama %>" class="btn btn-info badge" >Edit</a>
+                  <a href="/contact/delete/<%= contact.nama %>" class="btn btn-danger badge" onclick="return confirm('apakah anda yakin?')">Hapus</a>
                 </div>
             </div>
             <% } %> 
