@@ -69,11 +69,11 @@ const deleteContact = (nama) => {
 const updateContacts = (contactBaru) => {
     const contacts = loadContact();
     const filteredContacts = contacts.filter((contact) => contact.nama === contactBaru.oldnama);
-    console.log(filteredContacts);
+    
     
     delete contactBaru.oldnama;
 
-    console.log(contactBaru);
+    
 
     filteredContacts.push(contactBaru);
     saveContact(filteredContacts);
