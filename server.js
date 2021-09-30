@@ -17,11 +17,12 @@ app.set('view engine', 'ejs');
 
 //third party middle ware
 app.use(expressLayouts);
-app.use(morgan('dev'));
 
 app.set('layout', 'layouts/main-layout');
 app.use(express.urlencoded({ extended: true }));
 
+app.use(morgan('dev'));
+// flash
 app.use(cookieParser('secret'));
 app.use(session({
     cookie: { maxAge: 6000 },
